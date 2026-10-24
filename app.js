@@ -111,40 +111,47 @@ document.addEventListener('DOMContentLoaded', () => {
     function transliterateText(text) {
         if (!text) return '';
 
-        // Pre-processing Khusus Singkatan KAPITAL (2 Huruf atau lebih)
-        let processedText = text.replace(/\b[A-Z]{2,}\b/g, (match) => {
+        // Map Singkatan Karakter Tunggal Kapital
+        const CAPITAL_LETTER_MAP = {
+            'A': 'ꦄ', 'B': 'ꦧꦺ', 'C': 'ꦕꦺ', 'D': 'ꦢꦺ', 'E': 'ꦌ',
+            'F': 'ꦥ꦳꧀', 'G': 'ꦒꦺ', 'H': 'ꦲ', 'I': 'ꦆ', 'J': 'ꦗꦺ',
+            'K': 'ꦏꦺ', 'L': 'ꦌꦭ꧀', 'M': 'ꦌꦩ꧀', 'N': 'ꦌꦤ꧀', 'O': 'ꦎ',
+            'P': 'ꦥꦺ', 'Q': 'ꦏ', 'R': 'ꦌꦂ', 'S': 'ꦌꦱ꧀', 'T': 'ꦠꦺ',
+            'U': 'ꦈ', 'V': 'ꦮ꦳', 'W': 'ꦮꦺ', 'X': 'ꦌꦏ꧀ꦱ꧀', 'Y': 'ꦪꦺ', 'Z': 'ꦗ꦳'
+        };
+
+        const DIGRAPH_MAP = {
+            'DH': 'ꦣ', 'TH': 'ꦛ', 'NY': 'ꦚ', 'NG': 'ꦔ', 'KH': 'ꦑ', 'SH': 'ꦯ'
+        };
+
+        // Pattern untuk mendeteksi blok singkatan KAPITAL (misal: DHIY, D.H.I, DH.H.I, DIY, RT, RW)
+        const ABBR_REGEX = /\b(?:[A-Z]{2,}|[A-Z]{1,2}(?:\.[A-Z]{1,2})+)\.?;?/g;
+
+        let processedText = text.replace(ABBR_REGEX, (match) => {
+            let cleanMatch = match.replace(/[\.;]+$/, '');
+            let segments = cleanMatch.split('.');
             let result = '';
-            let i = 0;
-            while (i < match.length) {
-                let sub2 = match.substr(i, 2);
-                if (sub2 === 'DH') {
-                    result += 'ꦣ꧈';
-                    i += 2;
-                } else if (sub2 === 'TH') {
-                    result += 'ꦛ꧈';
-                    i += 2;
-                } else if (sub2 === 'NY') {
-                    result += 'ꦚ꧈';
-                    i += 2;
-                } else if (sub2 === 'NG') {
-                    result += 'ꦔ꧈';
-                    i += 2;
-                } else if (sub2 === 'KH') {
-                    result += 'ꦑ꧈';
-                    i += 2;
-                } else if (sub2 === 'SH') {
-                    result += 'ꦯ꧈';
-                    i += 2;
-                } else {
-                    let singleChar = match[i];
-                    if (typeof window.transliterasiKalimat === 'function') {
-                        result += window.transliterasiKalimat(singleChar);
+
+            segments.forEach(segment => {
+                if (!segment) return;
+                let i = 0;
+                while (i < segment.length) {
+                    let sub2 = segment.substr(i, 2);
+                    if (DIGRAPH_MAP[sub2]) {
+                        result += DIGRAPH_MAP[sub2] + '꧈';
+                        i += 2;
                     } else {
-                        result += singleChar + '꧈';
+                        let char = segment[i];
+                        if (CAPITAL_LETTER_MAP[char]) {
+                            result += CAPITAL_LETTER_MAP[char] + '꧈';
+                        } else {
+                            result += char + '꧈';
+                        }
+                        i += 1;
                     }
-                    i += 1;
                 }
-            }
+            });
+
             return result;
         });
 
@@ -263,14 +270,14 @@ document.addEventListener('DOMContentLoaded', () => {
             options = [
                 { label: 'D (Singkatan Da)', value: 'D', aksara: 'ꦢ' },
                 { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣ' },
-                { label: 'D.H. (Terpisah Da + Ha)', value: 'D.H.', aksara: 'ꦢꦺ꧈ꦲꦺ꧈' }
+                { label: 'D.H. (Terpisah Da + Ha)', value: 'D.H.', aksara: 'ꦢꦺ꧈ꦲ꧈' }
             ];
         } else if (char === 'd') {
             options = [
                 { label: 'd (Nga-lugu / Biasa)', value: 'd', aksara: 'ꦢ' },
                 { label: 'dh (Murni / Pasangan)', value: 'dh', aksara: 'ꦝ' },
                 { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣ' },
-                { label: 'D.H. (Terpisah Da + Ha)', value: 'D.H.', aksara: 'ꦢꦺ꧈ꦲꦺ꧈' }
+                { label: 'D.H. (Terpisah Da + Ha)', value: 'D.H.', aksara: 'ꦢꦺ꧈ꦲ꧈' }
             ];
         } 
         // 2. Kasus Karakter N / n (Contoh: NYC vs NY)
