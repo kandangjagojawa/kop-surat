@@ -117,58 +117,75 @@ document.addEventListener('DOMContentLoaded', () => {
             kopAlamat.textContent = resultAksara;
         }
 
-        // 3. Terapkan Nilai Slider Spasi & Ukuran
+        // 3. Ambil Nilai Slider Awal
         let instansiSize = parseInt(sliderInstansi.value, 10);
         let alamatSize = parseInt(sliderAlamat.value, 10);
 
-        // Batas: Ukuran font alamat tidak boleh melebihi ukuran instansi
+        // Constraint: Ukuran font alamat tidak boleh melebihi ukuran instansi
         if (alamatSize > instansiSize) {
             alamatSize = instansiSize;
             sliderAlamat.value = alamatSize;
         }
 
-        const masterScale = parseInt(sliderMaster.value, 10) / 100;
+        let rawMasterPercent = parseInt(sliderMaster.value, 10);
+        let masterScale = rawMasterPercent / 100;
         const gapInstansiVal = parseInt(sliderGapInstansi.value, 10);
         const lineHeightAlamatVal = parseFloat(sliderLineHeightAlamat.value);
         const gapAlamatVal = parseInt(sliderGapAlamat.value, 10);
 
-        // Terapkan spasi vertikal
+        // Terapkan Spasi Vertikal
         kopInstansi.style.marginBottom = `${gapInstansiVal}px`;
         kopAlamat.style.lineHeight = lineHeightAlamatVal;
         kopDivider.style.marginTop = `${gapAlamatVal}px`;
 
-        // Update nilai teks slider
-        valInstansi.textContent = instansiSize;
-        valGapInstansi.textContent = gapInstansiVal;
-        valAlamat.textContent = alamatSize;
-        valLineHeightAlamat.textContent = lineHeightAlamatVal;
-        valGapAlamat.textContent = gapAlamatVal;
-        valMaster.textContent = sliderMaster.value;
+        // 4. Pembatasan Master Scale & Font Size Berdasarkan Margin Kertas
+        const availableWidth = kopText.clientWidth;
 
-        // Terapkan ukuran font awal
+        // Terapkan ukuran awal berdasar Master Scale
         let targetInstansiPt = instansiSize * masterScale;
         let targetAlamatPt = alamatSize * masterScale;
 
         kopInstansi.style.fontSize = `${targetInstansiPt}pt`;
         kopAlamat.style.fontSize = `${targetAlamatPt}pt`;
 
-        // 4. Pembatasan Otomatis Ukuran Font Agar Tidak Melebihi Margin Kertas
-        const availableWidth = kopText.clientWidth;
+        // Cek apakah Master Scale menyebabkan teks melebihi margin (scrollWidth > availableWidth)
+        let isOverflowing = () => {
+            return (kopInstansi.scrollWidth > availableWidth) || (kopAlamat.scrollWidth > availableWidth);
+        };
 
-        // Cek dan kunci batas horizontal Nama Instansi (harus 1 baris)
+        // Jika terjadi overflow akibat Master Scale, kurangi Master Scale sampai pas di margin kertas
+        if (isOverflowing() && masterScale > 0.5) {
+            while (isOverflowing() && masterScale > 0.5) {
+                masterScale -= 0.01;
+                targetInstansiPt = instansiSize * masterScale;
+                targetAlamatPt = alamatSize * masterScale;
+                kopInstansi.style.fontSize = `${targetInstansiPt}pt`;
+                kopAlamat.style.fontSize = `${targetAlamatPt}pt`;
+            }
+
+            // Kunci nilai sliderMaster agar mengikuti batas maksimal margin kertas
+            const clampedMasterPercent = Math.max(70, Math.floor(masterScale * 100));
+            sliderMaster.value = clampedMasterPercent;
+            valMaster.textContent = clampedMasterPercent;
+        } else {
+            valMaster.textContent = rawMasterPercent;
+        }
+
+        // Cek ulang batas horizontal individual Nama Instansi
         while (kopInstansi.scrollWidth > availableWidth && targetInstansiPt > 8) {
             targetInstansiPt -= 0.5;
             kopInstansi.style.fontSize = `${targetInstansiPt}pt`;
         }
         
-        // Sesuaikan nilai slider jika font tertekan oleh batas margin
         let fittedInstansiVal = Math.floor(targetInstansiPt / masterScale);
         if (fittedInstansiVal < parseInt(sliderInstansi.value, 10)) {
             sliderInstansi.value = fittedInstansiVal;
             valInstansi.textContent = fittedInstansiVal;
+        } else {
+            valInstansi.textContent = instansiSize;
         }
 
-        // Cek dan kunci batas horizontal Alamat
+        // Cek ulang batas horizontal individual Alamat
         while (kopAlamat.scrollWidth > availableWidth && targetAlamatPt > 6) {
             targetAlamatPt -= 0.5;
             kopAlamat.style.fontSize = `${targetAlamatPt}pt`;
@@ -178,7 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fittedAlamatVal < parseInt(sliderAlamat.value, 10)) {
             sliderAlamat.value = fittedAlamatVal;
             valAlamat.textContent = fittedAlamatVal;
+        } else {
+            valAlamat.textContent = alamatSize;
         }
+
+        valGapInstansi.textContent = gapInstansiVal;
+        valLineHeightAlamat.textContent = lineHeightAlamatVal;
+        valGapAlamat.textContent = gapAlamatVal;
     }
 
     // Handler Logo & Rasio
