@@ -111,9 +111,38 @@ document.addEventListener('DOMContentLoaded', () => {
     function transliterateText(text) {
         if (!text) return '';
 
-        // Pre-processing: Mencegah singkatan "DH" kapital diurai menjadi D + H (ꦢ꧈ꦲ꧈)
-        // Mengubah "DH" kapital menjadi karakter Aksara Jawa ꦣ secara langsung sebelum diproses Sriwedari
-        let processedText = text.replace(/\bDH\b/g, 'ꦣ꧈');
+        // Pre-processing Khusus Singkatan KAPITAL (2 Huruf atau lebih)
+        // Memeriksa dwihuruf seperti DH, TH, NY, NG dalam singkatan tanpa spasi
+        let processedText = text.replace(/\b[A-Z]{2,}\b/g, (match) => {
+            let result = '';
+            let i = 0;
+            while (i < match.length) {
+                let sub2 = match.substr(i, 2);
+                if (sub2 === 'DH') {
+                    result += 'ꦣ꧈';
+                    i += 2;
+                } else if (sub2 === 'TH') {
+                    result += 'ꦛ꧈';
+                    i += 2;
+                } else if (sub2 === 'NY') {
+                    result += 'ꦚ꧈';
+                    i += 2;
+                } else if (sub2 === 'NG') {
+                    result += 'ꦔ꧈';
+                    i += 2;
+                } else if (sub2 === 'KH') {
+                    result += 'ꦑ꧈';
+                    i += 2;
+                } else if (sub2 === 'SH') {
+                    result += 'ꦯ꧈';
+                    i += 2;
+                } else {
+                    result += match[i];
+                    i += 1;
+                }
+            }
+            return result;
+        });
 
         if (typeof window.transliterasiKalimat === 'function') {
             return window.transliterasiKalimat(processedText);
