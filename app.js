@@ -28,8 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Referensi Elemen Input Form
+    // Referensi Elemen Input Form & Logo
     const logoInput = document.getElementById('logoInput');
+    const btnRemoveLogo = document.getElementById('btnRemoveLogo');
     const selectLogoRatio = document.getElementById('selectLogoRatio');
     const inputInstansi = document.getElementById('inputInstansi');
     const inputAlamat = document.getElementById('inputAlamat');
@@ -250,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         adjustMobileScale();
     }
 
-    // Handler Logo & Rasio
+    // Handler Upload & Ganti Logo
     logoInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -258,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onload = (event) => {
                 logoImg.src = event.target.result;
                 logoWrapper.style.display = 'flex';
+                if (btnRemoveLogo) btnRemoveLogo.style.display = 'inline-block';
                 requestAnimationFrame(() => {
                     renderKop();
                 });
@@ -266,11 +268,25 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             logoWrapper.style.display = 'none';
             logoImg.src = '';
+            if (btnRemoveLogo) btnRemoveLogo.style.display = 'none';
             requestAnimationFrame(() => {
                 renderKop();
             });
         }
     });
+
+    // Handler Hapus Logo
+    if (btnRemoveLogo) {
+        btnRemoveLogo.addEventListener('click', () => {
+            logoInput.value = '';
+            logoImg.src = '';
+            logoWrapper.style.display = 'none';
+            btnRemoveLogo.style.display = 'none';
+            requestAnimationFrame(() => {
+                renderKop();
+            });
+        });
+    }
 
     selectLogoRatio.addEventListener('change', (e) => {
         const ratio = e.target.value;
