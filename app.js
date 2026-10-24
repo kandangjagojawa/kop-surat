@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (alamatVal) resultAksara += applyScriptoContinua(transliterateText(alamatVal));
             if (rtVal) resultAksara += '꧈ꦌꦂ꧈ꦠꦺ꧈' + applyScriptoContinua(transliterateText(rtVal));
-            if (rwVal) resultAksara += '꧈ꦌꦂ꧈ꦮꦺ' + applyScriptoContinua(transliterateText(rwVal));
+            if (rwVal) resultAksara += '꧈ꦌꦂ꧈ꦮꦺ꧈' + applyScriptoContinua(transliterateText(rwVal));
             if (kelVal) resultAksara += '꧈ꦏꦼꦭ꧀꧇' + applyScriptoContinua(transliterateText(kelVal));
             if (kecVal) resultAksara += '꧈ꦏꦼꦕ꧀꧇' + applyScriptoContinua(transliterateText(kecVal));
             if (kotaVal) resultAksara += '꧈' + applyScriptoContinua(transliterateText(kotaVal));
