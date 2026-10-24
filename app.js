@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Referensi Elemen Modal Pop-up Cara Penulisan
+    // -------------------------------------------------------------
+    // 1. Referensi Elemen Modal Pop-up Cara Penulisan
+    // -------------------------------------------------------------
     const btnOpenGuide = document.getElementById('btnOpenGuide');
     const btnCloseGuide = document.getElementById('btnCloseGuide');
     const modalGuide = document.getElementById('modalGuide');
@@ -27,7 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Referensi Elemen Asisten Dropdown Karakter
+    // -------------------------------------------------------------
+    // 2. Referensi Elemen Asisten Dropdown Karakter
+    // -------------------------------------------------------------
     const toggleAssist = document.getElementById('toggleAssist');
     const assistDropdown = document.getElementById('assistDropdown');
     let activeInputForAssist = null;
@@ -44,7 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
         'A': 'ꦄ', 'I': 'ꦆ', 'U': 'ꦈ', 'O': 'ꦎ'
     };
 
-    // Referensi Input Form & Logo
+    // -------------------------------------------------------------
+    // 3. Referensi Input Form & Logo
+    // -------------------------------------------------------------
     const logoInput = document.getElementById('logoInput');
     const btnRemoveLogo = document.getElementById('btnRemoveLogo');
     const selectLogoRatio = document.getElementById('selectLogoRatio');
@@ -63,7 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
         inputKelurahan, inputKecamatan, inputKota, inputProvinsi, inputKodePos
     ];
 
-    // Referensi Radio & Sliders
+    // -------------------------------------------------------------
+    // 4. Referensi Radio & Sliders
+    // -------------------------------------------------------------
     const radioModeAlamat = document.getElementsByName('modeAlamat');
     const sliderInstansi = document.getElementById('sliderInstansi');
     const sliderGapInstansi = document.getElementById('sliderGapInstansi');
@@ -79,7 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const valGapAlamat = document.getElementById('valGapAlamat');
     const valMaster = document.getElementById('valMaster');
 
-    // Referensi Output Preview Kop
+    // -------------------------------------------------------------
+    // 5. Referensi Output Preview Kop
+    // -------------------------------------------------------------
     const logoWrapper = document.getElementById('logoWrapper');
     const logoImg = document.getElementById('logoImg');
     const kopText = document.getElementById('kopText');
@@ -95,16 +105,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const controlPanel = document.getElementById('controlPanel');
     const previewActions = document.getElementById('previewActions');
 
-    // Transliterasi Aksara Jawa menggunakan sriwedari-skt.js
+    // -------------------------------------------------------------
+    // 6. Fungsi Transliterasi & Helper
+    // -------------------------------------------------------------
     function transliterateText(text) {
         if (!text) return '';
+
+        // Pre-processing: Mencegah singkatan "DH" kapital diurai menjadi D + H (ꦢ꧈ꦲ꧈)
+        // Mengubah "DH" kapital menjadi karakter Aksara Jawa ꦣ secara langsung sebelum diproses Sriwedari
+        let processedText = text.replace(/\bDH\b/g, 'ꦣ꧈');
+
         if (typeof window.transliterasiKalimat === 'function') {
-            return window.transliterasiKalimat(text);
+            return window.transliterasiKalimat(processedText);
         }
-        return text;
+        return processedText;
     }
 
-    // Pemrosesan Scripto Continua (Tanpa Spasi antar kata)
     function applyScriptoContinua(aksaraStr) {
         if (!aksaraStr) return '';
         return aksaraStr.replace(/\s+/g, '');
@@ -117,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!pageA4 || !previewContainer) return;
 
         const screenWidth = window.innerWidth;
-        const a4WidthPx = pageA4.offsetWidth;
+        const a4WidthPx = pageA4.offsetWidth; // Standar 210mm (~794px)
 
         if (screenWidth < 834) {
             const padding = 32;
@@ -132,7 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Hide Dropdown Asisten
+    // -------------------------------------------------------------
+    // 7. Logika Asisten Dropdown Transliterasi
+    // -------------------------------------------------------------
     function hideAssistDropdown() {
         if (assistDropdown) {
             assistDropdown.style.display = 'none';
@@ -142,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         targetCharIndex = -1;
     }
 
-    // Tampilkan Dropdown Asisten Pilihan Karakter
     function showAssistDropdown(inputEl, options) {
         if (!assistDropdown) return;
 
@@ -170,7 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
         assistDropdown.style.display = 'flex';
     }
 
-    // Mengganti karakter pada input
     function replaceCharacterInInput(inputEl, index, newStr) {
         const val = inputEl.value;
         if (index < 0 || index >= val.length) return;
@@ -179,14 +195,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const after = val.substring(index + 1);
         inputEl.value = before + newStr + after;
 
-        // Set kursor setelah karakter yang baru diganti
         const newCursorPos = index + newStr.length;
         inputEl.setSelectionRange(newCursorPos, newCursorPos);
 
         renderKop();
     }
 
-    // Handler Deteksi Karakter saat Pengguna Mengetik
     function handleInputAssist(e) {
         if (!toggleAssist || !toggleAssist.checked) {
             hideAssistDropdown();
@@ -211,11 +225,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const lowerChar = char.toLowerCase();
         let options = [];
 
-        // 1. Kasus Karakter d / dh
-        if (lowerChar === 'd') {
+        // 1. Kasus Karakter D / d (Termasuk Singkatan DH)
+        if (char === 'D') {
+            options = [
+                { label: 'D (Singkatan Da)', value: 'D', aksara: 'ꦢ' },
+                { label: 'DH (Singkatan Dha / Murda)', value: 'DH', aksara: 'ꦣ' }
+            ];
+        } else if (char === 'd') {
             options = [
                 { label: 'd (Nga-lugu / Biasa)', value: 'd', aksara: 'ꦢ' },
-                { label: 'dh (Murni / Pasangan)', value: 'dh', aksara: 'ꦝ' }
+                { label: 'dh (Murni / Pasangan)', value: 'dh', aksara: 'ꦝ' },
+                { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣ' }
             ];
         } 
         // 2. Kasus Karakter e / é (taling/pepet)
@@ -227,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } 
         // 3. Kasus Aksara Murda
         else if (MURDA_MAP[char]) {
-            const isUpper = char === char.toUpperCase();
             const lower = char.toLowerCase();
             const upper = char.toUpperCase();
 
@@ -254,20 +273,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Event listeners untuk Asisten Karakter di setiap kotak input
     inputElements.forEach(el => {
         el.addEventListener('keyup', handleInputAssist);
         el.addEventListener('click', handleInputAssist);
         el.addEventListener('blur', () => {
-            // Beri sedikit jeda agar event click pada dropdown sempat diproses
             setTimeout(hideAssistDropdown, 200);
         });
     });
 
-    // Hide dropdown saat scroll
     window.addEventListener('scroll', hideAssistDropdown);
 
-    // Fungsi Utama Render Kop Surat
+    // -------------------------------------------------------------
+    // 8. Fungsi Utama Render Kop Surat
+    // -------------------------------------------------------------
     function renderKop() {
         // 1. Render Nama Instansi
         const rawInstansi = inputInstansi.value.trim();
@@ -407,7 +425,9 @@ document.addEventListener('DOMContentLoaded', () => {
         adjustMobileScale();
     }
 
-    // Handler Upload & Ganti Logo
+    // -------------------------------------------------------------
+    // 9. Event Handler Logo & Rasio
+    // -------------------------------------------------------------
     logoInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -431,7 +451,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Handler Hapus Logo
     if (btnRemoveLogo) {
         btnRemoveLogo.addEventListener('click', () => {
             logoInput.value = '';
@@ -459,7 +478,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Event Listeners Input & Slider
+    // -------------------------------------------------------------
+    // 10. Event Listener Input Form, Sliders & Navigation
+    // -------------------------------------------------------------
     inputElements.forEach(el => {
         el.addEventListener('input', renderKop);
     });
@@ -475,7 +496,6 @@ document.addEventListener('DOMContentLoaded', () => {
     sliderGapAlamat.addEventListener('input', renderKop);
     sliderMaster.addEventListener('input', renderKop);
 
-    // Navigasi Preview & Print
     btnPreview.addEventListener('click', () => {
         controlPanel.style.display = 'none';
         previewActions.style.display = 'flex';
