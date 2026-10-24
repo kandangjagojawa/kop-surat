@@ -222,6 +222,9 @@ input[type="range"] {
 .btn-info { background-color: var(--gold-accent); color: var(--soga-dark); }
 .btn-info:hover { background-color: #b08110; }
 
+.btn-danger { background-color: #a83232; color: white; }
+.btn-danger:hover { background-color: #8c2828; }
+
 /* Pop-up Modal Cara Penulisan */
 .modal-overlay {
     position: fixed;
@@ -297,14 +300,14 @@ input[type="range"] {
 .page-a4 {
     background: #ffffff;
     width: 210mm;
-    min-width: 210mm; /* Mengunci lebar fisik internal */
+    min-width: 210mm;
     min-height: 297mm;
     padding: 15mm 20mm 20mm 20mm;
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
     box-sizing: border-box;
     position: relative;
     background-clip: padding-box;
-    transform-origin: top center; /* Titik acuan visual scaling HP */
+    transform-origin: top center;
 }
 
 /* Area Kop Surat */
