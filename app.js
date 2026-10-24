@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (kecVal) resultAksara += '꧈ꦏꦼꦕ꧀꧇' + applyScriptoContinua(transliterateText(kecVal));
             if (kotaVal) resultAksara += '꧈' + applyScriptoContinua(transliterateText(kotaVal));
             if (provVal) resultAksara += '꧈' + applyScriptoContinua(transliterateText(provVal));
-            if (posVal) resultAksara += '꧈' + applyScriptoContinua(transliterateText(posVal));
+            //if (posVal) resultAksara += '꧈' + applyScriptoContinua(transliterateText(posVal));
 
             kopAlamat.textContent = resultAksara;
         }
