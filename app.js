@@ -1,4 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Referensi Elemen Modal Pop-up
+    const btnOpenGuide = document.getElementById('btnOpenGuide');
+    const btnCloseGuide = document.getElementById('btnCloseGuide');
+    const modalGuide = document.getElementById('modalGuide');
+
+    // Otomatis Tampilkan Modal Pop-up saat Pertama Kali Akses
+    if (modalGuide) {
+        modalGuide.style.display = 'flex';
+    }
+
+    // Event Listener Modal Pop-up
+    if (btnOpenGuide && modalGuide) {
+        btnOpenGuide.addEventListener('click', () => {
+            modalGuide.style.display = 'flex';
+        });
+    }
+
+    if (btnCloseGuide && modalGuide) {
+        btnCloseGuide.addEventListener('click', () => {
+            modalGuide.style.display = 'none';
+        });
+    }
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modalGuide) {
+            modalGuide.style.display = 'none';
+        }
+    });
+
     // Referensi Elemen Input Form
     const logoInput = document.getElementById('logoInput');
     const selectLogoRatio = document.getElementById('selectLogoRatio');
@@ -44,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const controlPanel = document.getElementById('controlPanel');
     const previewActions = document.getElementById('previewActions');
 
-    // Function Transliterasi Aksara Jawa menggunakan sriwedari-skt.js
+    // Transliterasi Aksara Jawa menggunakan sriwedari-skt.js
     function transliterateText(text) {
         if (!text) return '';
         if (typeof window.transliterasiKalimat === 'function') {
@@ -121,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let instansiSize = parseInt(sliderInstansi.value, 10);
         let alamatSize = parseInt(sliderAlamat.value, 10);
 
-        // Constraint: Ukuran font alamat tidak boleh melebihi ukuran instansi
         if (alamatSize > instansiSize) {
             alamatSize = instansiSize;
             sliderAlamat.value = alamatSize;
@@ -133,27 +161,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const lineHeightAlamatVal = parseFloat(sliderLineHeightAlamat.value);
         const gapAlamatVal = parseInt(sliderGapAlamat.value, 10);
 
-        // Terapkan Spasi Vertikal
         kopInstansi.style.marginBottom = `${gapInstansiVal}px`;
         kopAlamat.style.lineHeight = lineHeightAlamatVal;
         kopDivider.style.marginTop = `${gapAlamatVal}px`;
 
-        // 4. Pembatasan Master Scale & Font Size Berdasarkan Margin Kertas (Termasuk Lebar Logo)
+        // 4. Pembatasan Master Scale & Font Size Berdasarkan Margin Kertas
         const availableWidth = kopText.clientWidth;
 
-        // Terapkan ukuran awal berdasar Master Scale
         let targetInstansiPt = instansiSize * masterScale;
         let targetAlamatPt = alamatSize * masterScale;
 
         kopInstansi.style.fontSize = `${targetInstansiPt}pt`;
         kopAlamat.style.fontSize = `${targetAlamatPt}pt`;
 
-        // Cek apakah Master Scale menyebabkan teks melebihi margin (scrollWidth > availableWidth)
         let isOverflowing = () => {
             return (kopInstansi.scrollWidth > availableWidth) || (kopAlamat.scrollWidth > availableWidth);
         };
 
-        // Jika terjadi overflow akibat Master Scale, kurangi Master Scale sampai pas di sisa ruang margin
         if (isOverflowing() && masterScale > 0.5) {
             while (isOverflowing() && masterScale > 0.5) {
                 masterScale -= 0.01;
@@ -163,7 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 kopAlamat.style.fontSize = `${targetAlamatPt}pt`;
             }
 
-            // Kunci nilai sliderMaster agar mengikuti batas maksimal margin kertas
             const clampedMasterPercent = Math.max(70, Math.floor(masterScale * 100));
             sliderMaster.value = clampedMasterPercent;
             valMaster.textContent = clampedMasterPercent;
@@ -171,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
             valMaster.textContent = rawMasterPercent;
         }
 
-        // Cek ulang batas horizontal individual Nama Instansi
         while (kopInstansi.scrollWidth > availableWidth && targetInstansiPt > 8) {
             targetInstansiPt -= 0.5;
             kopInstansi.style.fontSize = `${targetInstansiPt}pt`;
@@ -185,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
             valInstansi.textContent = instansiSize;
         }
 
-        // Cek ulang batas horizontal individual Alamat
         while (kopAlamat.scrollWidth > availableWidth && targetAlamatPt > 6) {
             targetAlamatPt -= 0.5;
             kopAlamat.style.fontSize = `${targetAlamatPt}pt`;
