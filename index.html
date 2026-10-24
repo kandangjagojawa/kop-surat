@@ -10,9 +10,46 @@
 </head>
 <body>
 
+    <!-- Pop-up Modal Petunjuk Pertama Kali Masuk -->
+    <div id="welcomeModal" class="modal-overlay no-print">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Penting! Baca Petunjuk Cara Penulisan Huruf Latin agar Transliterasi Sesuai</h3>
+                <button id="btnCloseModal" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    <li><strong>e Pepet (e):</strong> Tulis <code>e</code> biasa (contoh: <code>kandhang</code> &rarr; ꦏꦤ꧀ꦝꦁ).</li>
+                    <li><strong>e Taling (é / e'):</strong> Tulis menggunakan petik tunggal <code>e'</code>, <code>é</code>, atau <code>è</code> (contoh: <code>je'ndral</code> &rarr; ꦗꦺꦤ꧀ꦢꦿꦭ꧀).</li>
+                    <li><strong>Aksara Murda:</strong> Gunakan huruf KAPITAL di awal kata untuk memunculkan Aksara Murda (contoh: <code>Umbulharja</code> &rarr; ꦈꦩ꧀ꦧꦸꦭ꧀ꦲꦂꦗ).</li>
+                    <li><strong>Singkatan:</strong> Ditulis KAPITAL berturut-turut (contoh: <code>DIY</code> &rarr; ꦢꦺ꧈ꦆ꧈ꦪꦺ꧈). Tanda lingsa (꧈) ditambahkan otomatis sebelum singkatan.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button id="btnUnderstand" class="btn btn-primary">Saya Mengerti</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Panel Kontrol Input (Disembunyikan saat cetak) -->
     <div class="control-panel no-print" id="controlPanel">
         <h2>Pengaturan Kop Surat Aksara Jawa</h2>
+
+        <!-- Panel Panduan Cara Penulisan (Posisi Paling Atas) -->
+        <div class="guide-box" id="guideBox">
+            <div class="guide-header">
+                <h4>Cara Penulisan & Transliterasi</h4>
+                <button id="btnToggleGuide" class="btn-toggle-guide">Sembunyikan</button>
+            </div>
+            <div class="guide-content" id="guideContent">
+                <ul>
+                    <li><strong>e Pepet (e):</strong> Tulis <code>e</code> biasa (contoh: <code>kandhang</code> &rarr; ꦏꦤ꧀ꦝꦁ).</li>
+                    <li><strong>e Taling (é / e'):</strong> Tulis menggunakan petik tunggal <code>e'</code>, <code>é</code>, atau <code>è</code> (contoh: <code>je'ndral</code> &rarr; ꦗꦺꦤ꧀ꦢꦿꦭ꧀).</li>
+                    <li><strong>Aksara Murda:</strong> Gunakan huruf KAPITAL di awal kata untuk memunculkan Aksara Murda (contoh: <code>Umbulharja</code> &rarr; ꦈꦩ꧀ꦧꦸꦭ꧀ꦲꦂꦗ).</li>
+                    <li><strong>Singkatan:</strong> Ditulis KAPITAL berturut-turut (contoh: <code>DIY</code> &rarr; ꦢꦺ꧈ꦆ꧈ꦪꦺ꧈). Tanda lingsa (꧈) ditambahkan otomatis sebelum singkatan.</li>
+                </ul>
+            </div>
+        </div>
 
         <div class="form-row">
             <div class="form-group" style="flex: 2;">
@@ -122,17 +159,6 @@
         <div class="button-group">
             <button id="btnPreview" class="btn btn-primary">Lihat Preview Kop</button>
             <button id="btnPrint" class="btn btn-success">Cetak / Print PDF</button>
-        </div>
-
-        <!-- Panduan Cara Penulisan -->
-        <div class="guide-box">
-            <h4>Cara Penulisan & Transliterasi</h4>
-            <ul>
-                <li><strong>e Pepet (e):</strong> Tulis <code>e</code> biasa (contoh: <code>kandhang</code> &rarr; ꦏꦤ꧀ꦝꦁ).</li>
-                <li><strong>e Taling (é / e'):</strong> Tulis menggunakan petik tunggal <code>e'</code>, <code>é</code>, atau <code>è</code> (contoh: <code>je'ndral</code> &rarr; ꦗꦺꦤ꧀ꦢꦿꦭ꧀).</li>
-                <li><strong>Aksara Murda:</strong> Gunakan huruf KAPITAL di awal kata untuk memunculkan Aksara Murda (contoh: <code>Umbulharja</code> &rarr; ꦈꦩ꧀ꦧꦸꦭ꧀ꦲꦂꦗ).</li>
-                <li><strong>Singkatan:</strong> Ditulis KAPITAL berturut-turut (contoh: <code>DIY</code> &rarr; ꦢꦺ꧈ꦆ꧈ꦪꦺ꧈). Tanda lingsa (꧈) ditambahkan otomatis sebelum singkatan.</li>
-            </ul>
         </div>
     </div>
 
