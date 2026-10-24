@@ -88,6 +88,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return aksaraStr.replace(/\s+/g, '');
     }
 
+    // Fungsi Penyesuaian Visual Scale untuk Layar HP/Tablet Kecil
+    function adjustMobileScale() {
+        const pageA4 = document.getElementById('pageA4');
+        const previewContainer = document.querySelector('.preview-container');
+        if (!pageA4 || !previewContainer) return;
+
+        const screenWidth = window.innerWidth;
+        const a4WidthPx = pageA4.offsetWidth; // Standar 210mm (~794px)
+
+        if (screenWidth < 834) {
+            const padding = 32;
+            const availableWidth = screenWidth - padding;
+            const scale = availableWidth / a4WidthPx;
+
+            pageA4.style.transform = `scale(${scale})`;
+            previewContainer.style.height = `${pageA4.offsetHeight * scale}px`;
+        } else {
+            pageA4.style.transform = 'none';
+            previewContainer.style.height = 'auto';
+        }
+    }
+
     // Fungsi Utama Render Kop Surat
     function renderKop() {
         // 1. Render Nama Instansi
@@ -223,6 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
         valGapInstansi.textContent = gapInstansiVal;
         valLineHeightAlamat.textContent = lineHeightAlamatVal;
         valGapAlamat.textContent = gapAlamatVal;
+
+        // Sesuaikan skala visual untuk HP
+        adjustMobileScale();
     }
 
     // Handler Logo & Rasio
@@ -301,6 +326,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnPrint.addEventListener('click', triggerPrint);
     btnPrint2.addEventListener('click', triggerPrint);
+
+    window.addEventListener('resize', adjustMobileScale);
 
     // Initial Render
     renderKop();
