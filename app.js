@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Referensi Elemen Modal Pop-up
+    // Referensi Elemen Modal Pop-up Cara Penulisan
     const btnOpenGuide = document.getElementById('btnOpenGuide');
     const btnCloseGuide = document.getElementById('btnCloseGuide');
     const modalGuide = document.getElementById('modalGuide');
@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modalGuide.style.display = 'flex';
     }
 
-    // Event Listener Modal Pop-up
     if (btnOpenGuide && modalGuide) {
         btnOpenGuide.addEventListener('click', () => {
             modalGuide.style.display = 'flex';
@@ -28,7 +27,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Referensi Elemen Input Form & Logo
+    // Referensi Elemen Asisten Dropdown Karakter
+    const toggleAssist = document.getElementById('toggleAssist');
+    const assistDropdown = document.getElementById('assistDropdown');
+    let activeInputForAssist = null;
+    let targetCharIndex = -1;
+
+    // Map Aksara Murda & Swara untuk Label Dropdown
+    const MURDA_MAP = {
+        'n': 'ꦟ', 'k': 'ꦑ', 't': 'ꦡ', 's': 'ꦯ', 'p': 'ꦦ', 'g': 'ꦓ', 'b': 'ꦨ', 'j': 'ꦙ',
+        'N': 'ꦟ', 'K': 'ꦑ', 'T': 'ꦡ', 'S': 'ꦯ', 'P': 'ꦦ', 'G': 'ꦓ', 'B': 'ꦨ', 'J': 'ꦙ'
+    };
+
+    const SWARA_MAP_SHOW = {
+        'a': 'ꦄ', 'i': 'ꦆ', 'u': 'ꦈ', 'o': 'ꦎ',
+        'A': 'ꦄ', 'I': 'ꦆ', 'U': 'ꦈ', 'O': 'ꦎ'
+    };
+
+    // Referensi Input Form & Logo
     const logoInput = document.getElementById('logoInput');
     const btnRemoveLogo = document.getElementById('btnRemoveLogo');
     const selectLogoRatio = document.getElementById('selectLogoRatio');
@@ -41,6 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputKota = document.getElementById('inputKota');
     const inputProvinsi = document.getElementById('inputProvinsi');
     const inputKodePos = document.getElementById('inputKodePos');
+
+    const inputElements = [
+        inputInstansi, inputAlamat, inputRT, inputRW,
+        inputKelurahan, inputKecamatan, inputKota, inputProvinsi, inputKodePos
+    ];
 
     // Referensi Radio & Sliders
     const radioModeAlamat = document.getElementsByName('modeAlamat');
@@ -96,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!pageA4 || !previewContainer) return;
 
         const screenWidth = window.innerWidth;
-        const a4WidthPx = pageA4.offsetWidth; // Standar 210mm (~794px)
+        const a4WidthPx = pageA4.offsetWidth;
 
         if (screenWidth < 834) {
             const padding = 32;
@@ -110,6 +131,141 @@ document.addEventListener('DOMContentLoaded', () => {
             previewContainer.style.height = 'auto';
         }
     }
+
+    // Hide Dropdown Asisten
+    function hideAssistDropdown() {
+        if (assistDropdown) {
+            assistDropdown.style.display = 'none';
+            assistDropdown.innerHTML = '';
+        }
+        activeInputForAssist = null;
+        targetCharIndex = -1;
+    }
+
+    // Tampilkan Dropdown Asisten Pilihan Karakter
+    function showAssistDropdown(inputEl, options) {
+        if (!assistDropdown) return;
+
+        activeInputForAssist = inputEl;
+        assistDropdown.innerHTML = '';
+
+        options.forEach((opt) => {
+            const optDiv = document.createElement('div');
+            optDiv.className = 'assist-option';
+            optDiv.innerHTML = `<span>${opt.label}</span><span class="aksara-badge">${opt.aksara}</span>`;
+            
+            optDiv.addEventListener('mousedown', (e) => {
+                e.preventDefault(); // Mencegah input kehilangan fokus
+                replaceCharacterInInput(inputEl, targetCharIndex, opt.value);
+                hideAssistDropdown();
+            });
+
+            assistDropdown.appendChild(optDiv);
+        });
+
+        const rect = inputEl.getBoundingClientRect();
+        assistDropdown.style.left = `${rect.left + window.scrollX}px`;
+        assistDropdown.style.top = `${rect.bottom + window.scrollY + 4}px`;
+        assistDropdown.style.width = `${Math.max(rect.width, 200)}px`;
+        assistDropdown.style.display = 'flex';
+    }
+
+    // Mengganti karakter pada input
+    function replaceCharacterInInput(inputEl, index, newStr) {
+        const val = inputEl.value;
+        if (index < 0 || index >= val.length) return;
+
+        const before = val.substring(0, index);
+        const after = val.substring(index + 1);
+        inputEl.value = before + newStr + after;
+
+        // Set kursor setelah karakter yang baru diganti
+        const newCursorPos = index + newStr.length;
+        inputEl.setSelectionRange(newCursorPos, newCursorPos);
+
+        renderKop();
+    }
+
+    // Handler Deteksi Karakter saat Pengguna Mengetik
+    function handleInputAssist(e) {
+        if (!toggleAssist || !toggleAssist.checked) {
+            hideAssistDropdown();
+            return;
+        }
+
+        const inputEl = e.target;
+        const cursorPos = inputEl.selectionStart;
+        if (cursorPos === 0) {
+            hideAssistDropdown();
+            return;
+        }
+
+        const typedIndex = cursorPos - 1;
+        const char = inputEl.value[typedIndex];
+        if (!char) {
+            hideAssistDropdown();
+            return;
+        }
+
+        targetCharIndex = typedIndex;
+        const lowerChar = char.toLowerCase();
+        let options = [];
+
+        // 1. Kasus Karakter d / dh
+        if (lowerChar === 'd') {
+            options = [
+                { label: 'd (Nga-lugu / Biasa)', value: 'd', aksara: 'ꦢ' },
+                { label: 'dh (Murni / Pasangan)', value: 'dh', aksara: 'ꦝ' }
+            ];
+        } 
+        // 2. Kasus Karakter e / é (taling/pepet)
+        else if (lowerChar === 'e' || char === 'é' || char === 'è') {
+            options = [
+                { label: 'e (Pepet / e biasa)', value: 'e', aksara: 'ꦼ' },
+                { label: "é / e' (Taling)", value: "e'", aksara: 'ꦺ' }
+            ];
+        } 
+        // 3. Kasus Aksara Murda
+        else if (MURDA_MAP[char]) {
+            const isUpper = char === char.toUpperCase();
+            const lower = char.toLowerCase();
+            const upper = char.toUpperCase();
+
+            options = [
+                { label: `${lower} (Aksara Biasa)`, value: lower, aksara: transliterateText(lower) },
+                { label: `${upper} (Aksara Murda)`, value: upper, aksara: MURDA_MAP[upper] }
+            ];
+        } 
+        // 4. Kasus Aksara Swara
+        else if (SWARA_MAP_SHOW[char]) {
+            const lower = char.toLowerCase();
+            const upper = char.toUpperCase();
+
+            options = [
+                { label: `${lower} (Vokal Biasa)`, value: lower, aksara: transliterateText(lower) },
+                { label: `${upper} (Aksara Swara)`, value: upper, aksara: SWARA_MAP_SHOW[upper] }
+            ];
+        }
+
+        if (options.length > 0) {
+            showAssistDropdown(inputEl, options);
+        } else {
+            hideAssistDropdown();
+        }
+    }
+
+    // Event listeners untuk Asisten Karakter di setiap kotak input
+    inputElements.forEach(el => {
+        el.addEventListener('keyup', handleInputAssist);
+        el.addEventListener('click', handleInputAssist);
+        el.addEventListener('blur', () => {
+            // Beri sedikit jeda agar event click pada dropdown sempat diproses
+            setTimeout(hideAssistDropdown, 200);
+        });
+    });
+
+    // Hide dropdown saat scroll
+    window.addEventListener('scroll', hideAssistDropdown);
 
     // Fungsi Utama Render Kop Surat
     function renderKop() {
@@ -304,11 +460,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Event Listeners Input & Slider
-    const inputElements = [
-        inputInstansi, inputAlamat, inputRT, inputRW,
-        inputKelurahan, inputKecamatan, inputKota, inputProvinsi, inputKodePos
-    ];
-
     inputElements.forEach(el => {
         el.addEventListener('input', renderKop);
     });
