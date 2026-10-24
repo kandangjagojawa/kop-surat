@@ -61,12 +61,14 @@ body {
 }
 
 .form-group input[type="text"],
-.form-group input[type="file"] {
+.form-group input[type="file"],
+.form-group select {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid #d1d5db;
     border-radius: 4px;
     font-size: 0.95rem;
+    background-color: #fff;
 }
 
 .form-row {
@@ -154,46 +156,58 @@ input[type="range"] {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    justify-content: flex-start;
+    overflow: visible;
     position: relative;
 }
 
+/* Pengaturan Logo & Jarak Khusus ke Teks */
 .logo-wrapper {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    max-height: 32mm;
-    max-width: 32mm;
+    flex-shrink: 0;
+    margin-right: 18px; /* Jarak khusus sebelah kanan logo ke teks */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .logo-wrapper img {
-    max-height: 32mm;
-    max-width: 32mm;
-    object-fit: contain;
-}
-
-.kop-text {
     width: 100%;
-    text-align: center;
+    height: 100%;
+    object-fit: contain; /* Logo fit masuk semua tanpa terpotong */
 }
 
+/* Pilihan Rasio Logo */
+.logo-wrapper.ratio-1-1 { width: 30mm; height: 30mm; }
+.logo-wrapper.ratio-3-4 { width: 24mm; height: 32mm; }
+.logo-wrapper.ratio-4-3 { width: 32mm; height: 24mm; }
+
+/* Wadah Teks Kop */
+.kop-text {
+    flex-grow: 1;
+    text-align: center;
+    overflow: visible;
+    width: 100%;
+}
+
+/* Teks Instansi (Aksara Jawa) */
 .kop-instansi {
     white-space: nowrap;
-    line-height: 1.2;
-    margin-bottom: 2px;
+    line-height: 1.6; /* Menjaga sandhangan inggil/ngisor tidak terpotong */
+    overflow: visible;
+    padding: 2px 0;
 }
 
+/* Teks Alamat */
 .kop-alamat {
-    line-height: 1.3;
+    line-height: 1.6;
     word-wrap: break-word;
+    overflow: visible;
+    padding: 2px 0;
 }
 
 /* Garis Pembatas Horisontal Kop */
 .kop-divider {
     width: 100%;
-    margin-top: 4mm;
     border-top: 1px solid #000000;
     border-bottom: 3px solid #000000;
     padding-top: 2px;
@@ -203,7 +217,7 @@ input[type="range"] {
 @media print {
     @page {
         size: A4 portrait;
-        margin: 15mm 20mm 20mm 20mm; /* Margin ditaati secara ketat */
+        margin: 15mm 20mm 20mm 20mm; /* Margin ketat */
     }
 
     body {
@@ -225,6 +239,6 @@ input[type="range"] {
     }
 
     .kop-container {
-        max-height: 35mm; /* Batas tinggi maksimal kop saat dicetak */
+        max-height: 35mm;
     }
 }
