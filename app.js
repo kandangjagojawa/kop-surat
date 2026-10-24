@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Referensi Elemen Input Form
     const logoInput = document.getElementById('logoInput');
+    const selectLogoRatio = document.getElementById('selectLogoRatio');
     const inputInstansi = document.getElementById('inputInstansi');
     const inputAlamat = document.getElementById('inputAlamat');
     const inputRT = document.getElementById('inputRT');
@@ -14,18 +15,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Referensi Radio & Sliders
     const radioModeAlamat = document.getElementsByName('modeAlamat');
     const sliderInstansi = document.getElementById('sliderInstansi');
+    const sliderGapInstansi = document.getElementById('sliderGapInstansi');
     const sliderAlamat = document.getElementById('sliderAlamat');
+    const sliderLineHeightAlamat = document.getElementById('sliderLineHeightAlamat');
+    const sliderGapAlamat = document.getElementById('sliderGapAlamat');
     const sliderMaster = document.getElementById('sliderMaster');
 
     const valInstansi = document.getElementById('valInstansi');
+    const valGapInstansi = document.getElementById('valGapInstansi');
     const valAlamat = document.getElementById('valAlamat');
+    const valLineHeightAlamat = document.getElementById('valLineHeightAlamat');
+    const valGapAlamat = document.getElementById('valGapAlamat');
     const valMaster = document.getElementById('valMaster');
 
     // Referensi Output Preview Kop
     const logoWrapper = document.getElementById('logoWrapper');
     const logoImg = document.getElementById('logoImg');
+    const kopText = document.getElementById('kopText');
     const kopInstansi = document.getElementById('kopInstansi');
     const kopAlamat = document.getElementById('kopAlamat');
+    const kopDivider = document.getElementById('kopDivider');
 
     // Referensi Tombol
     const btnPreview = document.getElementById('btnPreview');
@@ -47,18 +56,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Pemrosesan Scripto Continua (Tanpa Spasi antar kata)
     function applyScriptoContinua(aksaraStr) {
         if (!aksaraStr) return '';
-        // Menghapus spasi reguler antar aksara sesuai kaidah Scripto Continua
         return aksaraStr.replace(/\s+/g, '');
     }
 
-    // Fungsi Render Utama Kop Surat
+    // Fungsi Utama Render Kop Surat
     function renderKop() {
-        // 1. Nama Instansi
+        // 1. Render Nama Instansi
         const rawInstansi = inputInstansi.value.trim();
         const aksaraInstansi = applyScriptoContinua(transliterateText(rawInstansi));
         kopInstansi.textContent = aksaraInstansi;
 
-        // 2. Mode Penulisan Alamat (Aksara Jawa vs Huruf Latin)
+        // 2. Render Alamat (Aksara vs Latin)
         let modeAlamat = 'aksara';
         for (const radio of radioModeAlamat) {
             if (radio.checked) {
@@ -77,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const posVal = inputKodePos.value.trim();
 
         if (modeAlamat === 'latin') {
-            // Format Alamat Latin
             kopAlamat.className = 'kop-alamat';
             let parts = [];
             if (alamatVal) parts.push(alamatVal);
@@ -95,98 +102,117 @@ document.addEventListener('DOMContentLoaded', () => {
 
             kopAlamat.textContent = parts.join(', ');
         } else {
-            // Format Alamat Aksara Jawa dengan Kaidah Skenario
             kopAlamat.className = 'kop-alamat font-ngayogyann';
-
             let resultAksara = '';
 
-            // Alamat Jalan & No.
-            if (alamatVal) {
-                resultAksara += applyScriptoContinua(transliterateText(alamatVal));
-            }
-
-            // RT. (꧈ꦌꦂ꧈ꦠꦺ꧈)
-            if (rtVal) {
-                resultAksara += '꧈ꦌꦂ꧈ꦠꦺ꧈' + applyScriptoContinua(transliterateText(rtVal));
-            }
-
-            // RW. (꧈ꦌꦂ꧈ꦮꦺ)
-            if (rwVal) {
-                resultAksara += '꧈ꦌꦂ꧈ꦮꦺ' + applyScriptoContinua(transliterateText(rwVal));
-            }
-
-            // Kelurahan (꧈ꦏꦼꦭ꧀꧇)
-            if (kelVal) {
-                resultAksara += '꧈ꦏꦼꦭ꧀꧇' + applyScriptoContinua(transliterateText(kelVal));
-            }
-
-            // Kecamatan (꧈ꦏꦼꦕ꧀꧇)
-            if (kecVal) {
-                resultAksara += '꧈ꦏꦼꦕ꧀꧇' + applyScriptoContinua(transliterateText(kecVal));
-            }
-
-            // Kota/Kabupaten (Lingsa ꧈ di awal)
-            if (kotaVal) {
-                resultAksara += '꧈' + applyScriptoContinua(transliterateText(kotaVal));
-            }
-
-            // Provinsi (Lingsa ꧈ di awal, dengan proteksi singkatan seperti DIY)
-            if (provVal) {
-                // Jika input berupa singkatan kapital (misal DIY)
-                if (/^[A-Z]{2,}$/.test(provVal)) {
-                    resultAksara += '꧈' + applyScriptoContinua(transliterateText(provVal));
-                } else {
-                    resultAksara += '꧈' + applyScriptoContinua(transliterateText(provVal));
-                }
-            }
-
-            // Kode Pos
-            if (posVal) {
-                resultAksara += '꧈' + applyScriptoContinua(transliterateText(posVal));
-            }
+            if (alamatVal) resultAksara += applyScriptoContinua(transliterateText(alamatVal));
+            if (rtVal) resultAksara += '꧈ꦌꦂ꧈ꦠꦺ꧈' + applyScriptoContinua(transliterateText(rtVal));
+            if (rwVal) resultAksara += '꧈ꦌꦂ꧈ꦮꦺ' + applyScriptoContinua(transliterateText(rwVal));
+            if (kelVal) resultAksara += '꧈ꦏꦼꦭ꧀꧇' + applyScriptoContinua(transliterateText(kelVal));
+            if (kecVal) resultAksara += '꧈ꦏꦼꦕ꧀꧇' + applyScriptoContinua(transliterateText(kecVal));
+            if (kotaVal) resultAksara += '꧈' + applyScriptoContinua(transliterateText(kotaVal));
+            if (provVal) resultAksara += '꧈' + applyScriptoContinua(transliterateText(provVal));
+            if (posVal) resultAksara += '꧈' + applyScriptoContinua(transliterateText(posVal));
 
             kopAlamat.textContent = resultAksara;
         }
 
-        // 3. Pengaturan Ukuran Font & Slider Constraints
+        // 3. Terapkan Nilai Slider Spasi & Ukuran
         let instansiSize = parseInt(sliderInstansi.value, 10);
         let alamatSize = parseInt(sliderAlamat.value, 10);
 
-        // Constraint: Ukuran Alamat tidak boleh melebihi ukuran Instansi
+        // Batas: Ukuran font alamat tidak boleh melebihi ukuran instansi
         if (alamatSize > instansiSize) {
             alamatSize = instansiSize;
             sliderAlamat.value = alamatSize;
         }
 
         const masterScale = parseInt(sliderMaster.value, 10) / 100;
+        const gapInstansiVal = parseInt(sliderGapInstansi.value, 10);
+        const lineHeightAlamatVal = parseFloat(sliderLineHeightAlamat.value);
+        const gapAlamatVal = parseInt(sliderGapAlamat.value, 10);
 
-        // Update display angka slider
+        // Terapkan spasi vertikal
+        kopInstansi.style.marginBottom = `${gapInstansiVal}px`;
+        kopAlamat.style.lineHeight = lineHeightAlamatVal;
+        kopDivider.style.marginTop = `${gapAlamatVal}px`;
+
+        // Update nilai teks slider
         valInstansi.textContent = instansiSize;
+        valGapInstansi.textContent = gapInstansiVal;
         valAlamat.textContent = alamatSize;
+        valLineHeightAlamat.textContent = lineHeightAlamatVal;
+        valGapAlamat.textContent = gapAlamatVal;
         valMaster.textContent = sliderMaster.value;
 
-        // Terapkan Ukuran ke Element Kop
-        kopInstansi.style.fontSize = `${instansiSize * masterScale}pt`;
-        kopAlamat.style.fontSize = `${alamatSize * masterScale}pt`;
+        // Terapkan ukuran font awal
+        let targetInstansiPt = instansiSize * masterScale;
+        let targetAlamatPt = alamatSize * masterScale;
+
+        kopInstansi.style.fontSize = `${targetInstansiPt}pt`;
+        kopAlamat.style.fontSize = `${targetAlamatPt}pt`;
+
+        // 4. Pembatasan Otomatis Ukuran Font Agar Tidak Melebihi Margin Kertas
+        const availableWidth = kopText.clientWidth;
+
+        // Cek dan kunci batas horizontal Nama Instansi (harus 1 baris)
+        while (kopInstansi.scrollWidth > availableWidth && targetInstansiPt > 8) {
+            targetInstansiPt -= 0.5;
+            kopInstansi.style.fontSize = `${targetInstansiPt}pt`;
+        }
+        
+        // Sesuaikan nilai slider jika font tertekan oleh batas margin
+        let fittedInstansiVal = Math.floor(targetInstansiPt / masterScale);
+        if (fittedInstansiVal < parseInt(sliderInstansi.value, 10)) {
+            sliderInstansi.value = fittedInstansiVal;
+            valInstansi.textContent = fittedInstansiVal;
+        }
+
+        // Cek dan kunci batas horizontal Alamat
+        while (kopAlamat.scrollWidth > availableWidth && targetAlamatPt > 6) {
+            targetAlamatPt -= 0.5;
+            kopAlamat.style.fontSize = `${targetAlamatPt}pt`;
+        }
+
+        let fittedAlamatVal = Math.floor(targetAlamatPt / masterScale);
+        if (fittedAlamatVal < parseInt(sliderAlamat.value, 10)) {
+            sliderAlamat.value = fittedAlamatVal;
+            valAlamat.textContent = fittedAlamatVal;
+        }
     }
 
-    // Handler Upload Logo
+    // Handler Logo & Rasio
     logoInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (event) => {
                 logoImg.src = event.target.result;
-                logoWrapper.style.display = 'block';
+                logoWrapper.style.display = 'flex';
+                renderKop();
             };
             reader.readAsDataURL(file);
         } else {
             logoWrapper.style.display = 'none';
             logoImg.src = '';
+            renderKop();
         }
     });
 
-    // Event Listeners pada Input Form
+    selectLogoRatio.addEventListener('change', (e) => {
+        const ratio = e.target.value;
+        logoWrapper.className = 'logo-wrapper';
+        if (ratio === '3:4') {
+            logoWrapper.classList.add('ratio-3-4');
+        } else if (ratio === '4:3') {
+            logoWrapper.classList.add('ratio-4-3');
+        } else {
+            logoWrapper.classList.add('ratio-1-1');
+        }
+        renderKop();
+    });
+
+    // Event Listeners Input & Slider
     const inputElements = [
         inputInstansi, inputAlamat, inputRT, inputRW,
         inputKelurahan, inputKecamatan, inputKota, inputProvinsi, inputKodePos
@@ -201,10 +227,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     sliderInstansi.addEventListener('input', renderKop);
+    sliderGapInstansi.addEventListener('input', renderKop);
     sliderAlamat.addEventListener('input', renderKop);
+    sliderLineHeightAlamat.addEventListener('input', renderKop);
+    sliderGapAlamat.addEventListener('input', renderKop);
     sliderMaster.addEventListener('input', renderKop);
 
-    // Navigasi & Cetak
+    // Navigasi Preview & Print
     btnPreview.addEventListener('click', () => {
         controlPanel.style.display = 'none';
         previewActions.style.display = 'flex';
