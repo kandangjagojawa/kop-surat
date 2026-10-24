@@ -14,9 +14,19 @@
     <div class="control-panel no-print" id="controlPanel">
         <h2>Pengaturan Kop Surat Aksara Jawa</h2>
 
-        <div class="form-group">
-            <label for="logoInput">Upload Logo (Opsional):</label>
-            <input type="file" id="logoInput" accept="image/*">
+        <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+                <label for="logoInput">Upload Logo (Opsional):</label>
+                <input type="file" id="logoInput" accept="image/*">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="selectLogoRatio">Rasio Logo:</label>
+                <select id="selectLogoRatio">
+                    <option value="1:1" selected>1 : 1 (Persegi)</option>
+                    <option value="3:4">3 : 4 (Potret)</option>
+                    <option value="4:3">4 : 3 (Lanskap)</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-group">
@@ -77,16 +87,31 @@
 
         <hr>
 
-        <h3>Pengaturan Ukuran Font</h3>
+        <h3>Pengaturan Ukuran Font & Spasi Vertikal</h3>
 
         <div class="form-group">
             <label for="sliderInstansi">Ukuran Font Instansi: <span id="valInstansi">20</span>pt</label>
-            <input type="range" id="sliderInstansi" min="12" max="32" value="20">
+            <input type="range" id="sliderInstansi" min="10" max="36" value="20">
+        </div>
+
+        <div class="form-group">
+            <label for="sliderGapInstansi">Spasi Vertikal Bawah Nama Instansi: <span id="valGapInstansi">6</span>px</label>
+            <input type="range" id="sliderGapInstansi" min="0" max="30" value="6">
         </div>
 
         <div class="form-group">
             <label for="sliderAlamat">Ukuran Font Alamat: <span id="valAlamat">12</span>pt</label>
             <input type="range" id="sliderAlamat" min="8" max="24" value="12">
+        </div>
+
+        <div class="form-group">
+            <label for="sliderLineHeightAlamat">Spasi Antar Baris Alamat: <span id="valLineHeightAlamat">1.6</span></label>
+            <input type="range" id="sliderLineHeightAlamat" min="1.0" max="2.5" step="0.1" value="1.6">
+        </div>
+
+        <div class="form-group">
+            <label for="sliderGapAlamat">Spasi Vertikal Alamat ke Garis Double: <span id="valGapAlamat">8</span>px</label>
+            <input type="range" id="sliderGapAlamat" min="0" max="30" value="8">
         </div>
 
         <div class="form-group">
@@ -120,18 +145,18 @@
     <!-- Pratinjau Kertas A4 (210mm x 297mm) -->
     <div class="page-a4" id="pageA4">
         <div class="kop-container" id="kopContainer">
-            <div class="logo-wrapper" id="logoWrapper" style="display: none;">
+            <div class="logo-wrapper ratio-1-1" id="logoWrapper" style="display: none;">
                 <img id="logoImg" src="" alt="Logo Instansi">
             </div>
             
-            <div class="kop-text">
+            <div class="kop-text" id="kopText">
                 <div id="kopInstansi" class="kop-instansi font-ngayogyann"></div>
                 <div id="kopAlamat" class="kop-alamat"></div>
             </div>
         </div>
         
         <!-- Garis Pembatas Kop (Atas Tipis, Bawah Tebal) -->
-        <div class="kop-divider"></div>
+        <div class="kop-divider" id="kopDivider"></div>
     </div>
 
     <script src="app.js"></script>
