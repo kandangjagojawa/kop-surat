@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kop Surat Aksara Jawa</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Engine Transliterasi Sriwedari -->
+    <script src="sriwedari-skt.js"></script>
+</head>
+<body>
+
+    <!-- Panel Kontrol Input (Disembunyikan saat cetak) -->
+    <div class="control-panel no-print" id="controlPanel">
+        <h2>Pengaturan Kop Surat Aksara Jawa</h2>
+
+        <div class="form-group">
+            <label for="logoInput">Upload Logo (Opsional):</label>
+            <input type="file" id="logoInput" accept="image/*">
+        </div>
+
+        <div class="form-group">
+            <label for="inputInstansi">Nama Instansi / Organisasi (Wajib):</label>
+            <input type="text" id="inputInstansi" value="komunitas kandhangjago yogyakarta" autocapitalize="none" spellcheck="false">
+        </div>
+
+        <div class="form-group">
+            <label for="inputAlamat">Alamat Jalan & No. (Wajib):</label>
+            <input type="text" id="inputAlamat" value="jalan je'ndral sudirman no: 15" autocapitalize="none" spellcheck="false">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="inputRT">RT:</label>
+                <input type="text" id="inputRT" value="9" autocapitalize="none" spellcheck="false">
+            </div>
+            <div class="form-group">
+                <label for="inputRW">RW:</label>
+                <input type="text" id="inputRW" value="3" autocapitalize="none" spellcheck="false">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="inputKelurahan">Kelurahan:</label>
+                <input type="text" id="inputKelurahan" value="sukamaju" autocapitalize="none" spellcheck="false">
+            </div>
+            <div class="form-group">
+                <label for="inputKecamatan">Kecamatan:</label>
+                <input type="text" id="inputKecamatan" value="Umbulharja" autocapitalize="none" spellcheck="false">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="inputKota">Kota / Kabupaten:</label>
+                <input type="text" id="inputKota" value="yogyakarta" autocapitalize="none" spellcheck="false">
+            </div>
+            <div class="form-group">
+                <label for="inputProvinsi">Provinsi:</label>
+                <input type="text" id="inputProvinsi" value="DIY" autocapitalize="none" spellcheck="false">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputKodePos">Kode Pos:</label>
+            <input type="text" id="inputKodePos" value="55124" autocapitalize="none" spellcheck="false">
+        </div>
+
+        <div class="form-group">
+            <label>Penulisan Alamat (Baris Bawah):</label>
+            <div class="radio-group">
+                <label><input type="radio" name="modeAlamat" value="aksara" checked> Aksara Jawa</label>
+                <label><input type="radio" name="modeAlamat" value="latin"> Huruf Latin</label>
+            </div>
+        </div>
+
+        <hr>
+
+        <h3>Pengaturan Ukuran Font</h3>
+
+        <div class="form-group">
+            <label for="sliderInstansi">Ukuran Font Instansi: <span id="valInstansi">20</span>pt</label>
+            <input type="range" id="sliderInstansi" min="12" max="32" value="20">
+        </div>
+
+        <div class="form-group">
+            <label for="sliderAlamat">Ukuran Font Alamat: <span id="valAlamat">12</span>pt</label>
+            <input type="range" id="sliderAlamat" min="8" max="24" value="12">
+        </div>
+
+        <div class="form-group">
+            <label for="sliderMaster">Master Scale Kop: <span id="valMaster">100</span>%</label>
+            <input type="range" id="sliderMaster" min="70" max="130" value="100">
+        </div>
+
+        <div class="button-group">
+            <button id="btnPreview" class="btn btn-primary">Lihat Preview Kop</button>
+            <button id="btnPrint" class="btn btn-success">Cetak / Print PDF</button>
+        </div>
+
+        <!-- Panduan Cara Penulisan -->
+        <div class="guide-box">
+            <h4>Cara Penulisan & Transliterasi</h4>
+            <ul>
+                <li><strong>e Pepet (e):</strong> Tulis <code>e</code> biasa (contoh: <code>kandhang</code> &rarr; ꦏꦤ꧀ꦝꦁ).</li>
+                <li><strong>e Taling (é / e'):</strong> Tulis menggunakan petik tunggal <code>e'</code>, <code>é</code>, atau <code>è</code> (contoh: <code>je'ndral</code> &rarr; ꦗꦺꦤ꧀ꦢꦿꦭ꧀).</li>
+                <li><strong>Aksara Murda:</strong> Gunakan huruf KAPITAL di awal kata untuk memunculkan Aksara Murda (contoh: <code>Umbulharja</code> &rarr; ꦈꦩ꧀ꦧꦸꦭ꧀ꦲꦂꦗ).</li>
+                <li><strong>Singkatan:</strong> Ditulis KAPITAL berturut-turut (contoh: <code>DIY</code> &rarr; ꦢꦺ꧈ꦆ꧈ꦪꦺ꧈). Tanda lingsa (꧈) ditambahkan otomatis sebelum singkatan.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Tombol Kembali ke Mode Edit (Hanya Muncul saat Mode Preview) -->
+    <div class="preview-actions no-print" id="previewActions" style="display: none;">
+        <button id="btnEdit" class="btn btn-secondary">Kembali ke Input (Edit)</button>
+        <button id="btnPrint2" class="btn btn-success">Cetak / Print PDF</button>
+    </div>
+
+    <!-- Pratinjau Kertas A4 (210mm x 297mm) -->
+    <div class="page-a4" id="pageA4">
+        <div class="kop-container" id="kopContainer">
+            <div class="logo-wrapper" id="logoWrapper" style="display: none;">
+                <img id="logoImg" src="" alt="Logo Instansi">
+            </div>
+            
+            <div class="kop-text">
+                <div id="kopInstansi" class="kop-instansi font-ngayogyann"></div>
+                <div id="kopAlamat" class="kop-alamat"></div>
+            </div>
+        </div>
+        
+        <!-- Garis Pembatas Kop (Atas Tipis, Bawah Tebal) -->
+        <div class="kop-divider"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
