@@ -131,7 +131,7 @@ body {
     box-shadow: 0 0 0 3px rgba(198, 146, 20, 0.2);
 }
 
-/* Penanda Khusus untuk Input Wajib (Tanpa Teks 'Wajib') */
+/* Penanda Khusus untuk Input Wajib */
 .input-required {
     border-left: 4px solid var(--terracotta) !important;
     background-color: #fffdfa;
@@ -283,16 +283,28 @@ input[type="range"] {
     color: var(--terracotta);
 }
 
-/* Format Halaman A4 Preview */
+/* Wadah Pembungkus Preview */
+.preview-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
+    padding: 10px 0;
+}
+
+/* Format Halaman A4 Selalu Tetap 210mm di Semua Perangkat */
 .page-a4 {
     background: #ffffff;
     width: 210mm;
+    min-width: 210mm; /* Mengunci lebar fisik internal */
     min-height: 297mm;
     padding: 15mm 20mm 20mm 20mm;
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
     box-sizing: border-box;
     position: relative;
     background-clip: padding-box;
+    transform-origin: top center; /* Titik acuan visual scaling HP */
 }
 
 /* Area Kop Surat */
@@ -352,18 +364,18 @@ input[type="range"] {
     padding-top: 2px;
 }
 
-/* Wadah Pembungkus Preview */
-.preview-container {
-    width: 100%;
-    max-width: 100%;
-    display: flex;
-    justify-content: center;
-    overflow-x: auto; /* Memungkinkan pinch-zoom dan geser halus di HP */
-    padding: 10px 0;
-    -webkit-overflow-scrolling: touch;
+/* Keyframes Animasi */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-/* Penyesuaian khusus Tampilan Layar HP / Tablet */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Media Query Khusus Layar HP / Tablet */
 @media screen and (max-width: 768px) {
     .control-panel {
         padding: 20px 16px;
@@ -374,16 +386,6 @@ input[type="range"] {
         gap: 0;
     }
 
-    /* Tampilan A4 menyesuaikan lebar HP secara proporsional */
-    .page-a4 {
-        width: 100%;
-        max-width: 210mm;
-        min-height: auto;
-        aspect-ratio: 210 / 297; /* Menjaga rasio A4 */
-        padding: 10mm 12mm 12mm 12mm;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
     .button-group, .preview-actions {
         flex-direction: column;
         gap: 10px;
@@ -392,17 +394,6 @@ input[type="range"] {
     .btn {
         width: 100%;
     }
-}
-
-/* Keyframes Animasi */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 @media print {
@@ -423,10 +414,17 @@ input[type="range"] {
 
     .page-a4 {
         width: 100%;
+        min-width: auto;
         min-height: auto;
         padding: 0;
         box-shadow: none;
         border: none;
+        transform: none !important;
+    }
+
+    .preview-container {
+        height: auto !important;
+        padding: 0;
     }
 
     .kop-container {
