@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function transliterateText(text) {
         if (!text) return '';
 
-        // Map Singkatan Karakter Tunggal Kapital
+        // Map Singkatan Karakter Tunggal Kapital (Lengkap dengan Taling Pelafalan)
         const CAPITAL_LETTER_MAP = {
             'A': 'ꦄ', 'B': 'ꦧꦺ', 'C': 'ꦕꦺ', 'D': 'ꦢꦺ', 'E': 'ꦌ',
             'F': 'ꦥ꦳꧀', 'G': 'ꦒꦺ', 'H': 'ꦲ', 'I': 'ꦆ', 'J': 'ꦗꦺ',
@@ -120,11 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
             'U': 'ꦈ', 'V': 'ꦮ꦳', 'W': 'ꦮꦺ', 'X': 'ꦌꦏ꧀ꦱ꧀', 'Y': 'ꦪꦺ', 'Z': 'ꦗ꦳'
         };
 
+        // Map Dwihuruf Digraf Singkatan
         const DIGRAPH_MAP = {
-            'DH': 'ꦣ', 'TH': 'ꦛ', 'NY': 'ꦚ', 'NG': 'ꦔ', 'KH': 'ꦑ', 'SH': 'ꦯ'
+            'DH': 'ꦣꦺ', 'TH': 'ꦛꦺ', 'NY': 'ꦚꦺ', 'NG': 'ꦔꦺ', 'KH': 'ꦑꦺ', 'SH': 'ꦯꦺ'
         };
 
-        // Pattern untuk mendeteksi blok singkatan KAPITAL (misal: DHIY, D.H.I, DH.H.I, DIY, RT, RW)
+        // Pattern untuk mendeteksi blok singkatan KAPITAL (misal: DHIY, DH.I.Y, D.I.Y, DIY, RT, RW)
         const ABBR_REGEX = /\b(?:[A-Z]{2,}|[A-Z]{1,2}(?:\.[A-Z]{1,2})+)\.?;?/g;
 
         let processedText = text.replace(ABBR_REGEX, (match) => {
@@ -268,33 +269,33 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Kasus Karakter D / d
         if (char === 'D') {
             options = [
-                { label: 'D (Singkatan Da)', value: 'D', aksara: 'ꦢ' },
-                { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣ' },
+                { label: 'D (Singkatan Da)', value: 'D', aksara: 'ꦢꦺ' },
+                { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣꦺ' },
                 { label: 'D.H. (Terpisah Da + Ha)', value: 'D.H.', aksara: 'ꦢꦺ꧈ꦲ꧈' }
             ];
         } else if (char === 'd') {
             options = [
                 { label: 'd (Nga-lugu / Biasa)', value: 'd', aksara: 'ꦢ' },
                 { label: 'dh (Murni / Pasangan)', value: 'dh', aksara: 'ꦝ' },
-                { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣ' },
+                { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣꦺ' },
                 { label: 'D.H. (Terpisah Da + Ha)', value: 'D.H.', aksara: 'ꦢꦺ꧈ꦲ꧈' }
             ];
         } 
-        // 2. Kasus Karakter N / n (Contoh: NYC vs NY)
+        // 2. Kasus Karakter N / n
         else if (char === 'N') {
             options = [
                 { label: 'N (Singkatan Na)', value: 'N', aksara: 'ꦌꦤ꧀' },
-                { label: 'NY (Singkatan Nya)', value: 'NY', aksara: 'ꦚ' },
+                { label: 'NY (Singkatan Nya)', value: 'NY', aksara: 'ꦚꦺ' },
                 { label: 'N.Y. (Terpisah N + Y)', value: 'N.Y.', aksara: 'ꦌꦤ꧀꧈ꦪꦺ꧈' },
-                { label: 'NG (Singkatan Nga)', value: 'NG', aksara: 'ꦔ' }
+                { label: 'NG (Singkatan Nga)', value: 'NG', aksara: 'ꦔꦺ' }
             ];
         }
         // 3. Kasus Karakter T / t
         else if (char === 'T') {
             options = [
-                { label: 'T (Singkatan Ta)', value: 'T', aksara: 'ꦠ' },
-                { label: 'TH (Singkatan Tha)', value: 'TH', aksara: 'ꦛ' },
-                { label: 'T.H. (Terpisah T + H)', value: 'T.H.', aksara: 'ꦠꦺ꧈ꦲꦺ꧈' }
+                { label: 'T (Singkatan Ta)', value: 'T', aksara: 'ꦠꦺ' },
+                { label: 'TH (Singkatan Tha)', value: 'TH', aksara: 'ꦛꦺ' },
+                { label: 'T.H. (Terpisah T + H)', value: 'T.H.', aksara: 'ꦠꦺ꧈ꦲ꧈' }
             ];
         }
         // 4. Kasus Karakter e / é (taling/pepet)
