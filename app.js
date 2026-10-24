@@ -112,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!text) return '';
 
         // Pre-processing Khusus Singkatan KAPITAL (2 Huruf atau lebih)
-        // Memeriksa dwihuruf seperti DH, TH, NY, NG dalam singkatan tanpa spasi
         let processedText = text.replace(/\b[A-Z]{2,}\b/g, (match) => {
             let result = '';
             let i = 0;
@@ -137,7 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     result += 'ꦯ꧈';
                     i += 2;
                 } else {
-                    result += match[i];
+                    let singleChar = match[i];
+                    if (typeof window.transliterasiKalimat === 'function') {
+                        result += window.transliterasiKalimat(singleChar);
+                    } else {
+                        result += singleChar + '꧈';
+                    }
                     i += 1;
                 }
             }
@@ -162,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!pageA4 || !previewContainer) return;
 
         const screenWidth = window.innerWidth;
-        const a4WidthPx = pageA4.offsetWidth; // Standar 210mm (~794px)
+        const a4WidthPx = pageA4.offsetWidth;
 
         if (screenWidth < 834) {
             const padding = 32;
@@ -201,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
             optDiv.innerHTML = `<span>${opt.label}</span><span class="aksara-badge">${opt.aksara}</span>`;
             
             optDiv.addEventListener('mousedown', (e) => {
-                e.preventDefault(); // Mencegah input kehilangan fokus
+                e.preventDefault();
                 replaceCharacterInInput(inputEl, targetCharIndex, opt.value);
                 hideAssistDropdown();
             });
@@ -212,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const rect = inputEl.getBoundingClientRect();
         assistDropdown.style.left = `${rect.left + window.scrollX}px`;
         assistDropdown.style.top = `${rect.bottom + window.scrollY + 4}px`;
-        assistDropdown.style.width = `${Math.max(rect.width, 200)}px`;
+        assistDropdown.style.width = `${Math.max(rect.width, 220)}px`;
         assistDropdown.style.display = 'flex';
     }
 
@@ -254,27 +258,46 @@ document.addEventListener('DOMContentLoaded', () => {
         const lowerChar = char.toLowerCase();
         let options = [];
 
-        // 1. Kasus Karakter D / d (Termasuk Singkatan DH)
+        // 1. Kasus Karakter D / d
         if (char === 'D') {
             options = [
                 { label: 'D (Singkatan Da)', value: 'D', aksara: 'ꦢ' },
-                { label: 'DH (Singkatan Dha / Murda)', value: 'DH', aksara: 'ꦣ' }
+                { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣ' },
+                { label: 'D.H. (Terpisah Da + Ha)', value: 'D.H.', aksara: 'ꦢꦺ꧈ꦲꦺ꧈' }
             ];
         } else if (char === 'd') {
             options = [
                 { label: 'd (Nga-lugu / Biasa)', value: 'd', aksara: 'ꦢ' },
                 { label: 'dh (Murni / Pasangan)', value: 'dh', aksara: 'ꦝ' },
-                { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣ' }
+                { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣ' },
+                { label: 'D.H. (Terpisah Da + Ha)', value: 'D.H.', aksara: 'ꦢꦺ꧈ꦲꦺ꧈' }
             ];
         } 
-        // 2. Kasus Karakter e / é (taling/pepet)
+        // 2. Kasus Karakter N / n (Contoh: NYC vs NY)
+        else if (char === 'N') {
+            options = [
+                { label: 'N (Singkatan Na)', value: 'N', aksara: 'ꦌꦤ꧀' },
+                { label: 'NY (Singkatan Nya)', value: 'NY', aksara: 'ꦚ' },
+                { label: 'N.Y. (Terpisah N + Y)', value: 'N.Y.', aksara: 'ꦌꦤ꧀꧈ꦪꦺ꧈' },
+                { label: 'NG (Singkatan Nga)', value: 'NG', aksara: 'ꦔ' }
+            ];
+        }
+        // 3. Kasus Karakter T / t
+        else if (char === 'T') {
+            options = [
+                { label: 'T (Singkatan Ta)', value: 'T', aksara: 'ꦠ' },
+                { label: 'TH (Singkatan Tha)', value: 'TH', aksara: 'ꦛ' },
+                { label: 'T.H. (Terpisah T + H)', value: 'T.H.', aksara: 'ꦠꦺ꧈ꦲꦺ꧈' }
+            ];
+        }
+        // 4. Kasus Karakter e / é (taling/pepet)
         else if (lowerChar === 'e' || char === 'é' || char === 'è') {
             options = [
                 { label: 'e (Pepet / e biasa)', value: 'e', aksara: 'ꦼ' },
                 { label: "é / e' (Taling)", value: "e'", aksara: 'ꦺ' }
             ];
         } 
-        // 3. Kasus Aksara Murda
+        // 5. Kasus Aksara Murda
         else if (MURDA_MAP[char]) {
             const lower = char.toLowerCase();
             const upper = char.toUpperCase();
@@ -284,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { label: `${upper} (Aksara Murda)`, value: upper, aksara: MURDA_MAP[upper] }
             ];
         } 
-        // 4. Kasus Aksara Swara
+        // 6. Kasus Aksara Swara
         else if (SWARA_MAP_SHOW[char]) {
             const lower = char.toLowerCase();
             const upper = char.toUpperCase();
