@@ -352,6 +352,48 @@ input[type="range"] {
     padding-top: 2px;
 }
 
+/* Wadah Pembungkus Preview */
+.preview-container {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto; /* Memungkinkan pinch-zoom dan geser halus di HP */
+    padding: 10px 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Penyesuaian khusus Tampilan Layar HP / Tablet */
+@media screen and (max-width: 768px) {
+    .control-panel {
+        padding: 20px 16px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* Tampilan A4 menyesuaikan lebar HP secara proporsional */
+    .page-a4 {
+        width: 100%;
+        max-width: 210mm;
+        min-height: auto;
+        aspect-ratio: 210 / 297; /* Menjaga rasio A4 */
+        padding: 10mm 12mm 12mm 12mm;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .button-group, .preview-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
 /* Keyframes Animasi */
 @keyframes fadeIn {
     from { opacity: 0; }
