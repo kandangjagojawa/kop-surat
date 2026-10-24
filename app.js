@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         kopAlamat.style.lineHeight = lineHeightAlamatVal;
         kopDivider.style.marginTop = `${gapAlamatVal}px`;
 
-        // 4. Pembatasan Master Scale & Font Size Berdasarkan Margin Kertas
+        // 4. Pembatasan Master Scale & Font Size Berdasarkan Margin Kertas (Termasuk Lebar Logo)
         const availableWidth = kopText.clientWidth;
 
         // Terapkan ukuran awal berdasar Master Scale
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return (kopInstansi.scrollWidth > availableWidth) || (kopAlamat.scrollWidth > availableWidth);
         };
 
-        // Jika terjadi overflow akibat Master Scale, kurangi Master Scale sampai pas di margin kertas
+        // Jika terjadi overflow akibat Master Scale, kurangi Master Scale sampai pas di sisa ruang margin
         if (isOverflowing() && masterScale > 0.5) {
             while (isOverflowing() && masterScale > 0.5) {
                 masterScale -= 0.01;
@@ -212,13 +212,17 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onload = (event) => {
                 logoImg.src = event.target.result;
                 logoWrapper.style.display = 'flex';
-                renderKop();
+                requestAnimationFrame(() => {
+                    renderKop();
+                });
             };
             reader.readAsDataURL(file);
         } else {
             logoWrapper.style.display = 'none';
             logoImg.src = '';
-            renderKop();
+            requestAnimationFrame(() => {
+                renderKop();
+            });
         }
     });
 
@@ -232,7 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             logoWrapper.classList.add('ratio-1-1');
         }
-        renderKop();
+        requestAnimationFrame(() => {
+            renderKop();
+        });
     });
 
     // Event Listeners Input & Slider
