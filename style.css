@@ -4,10 +4,23 @@
     src: url('ngayogyann.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ngayogyan Jejeg';
+    src: url('ngayogyanj.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
 
 .font-ngayogyann {
     font-family: 'Ngayogyann', 'Times New Roman', serif;
+}
+
+.font-ngayogyanj {
+    font-family: 'Ngayogyan Jejeg', 'Times New Roman', serif;
 }
 
 :root {
