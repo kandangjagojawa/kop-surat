@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCloseGuide = document.getElementById('btnCloseGuide');
     const modalGuide = document.getElementById('modalGuide');
 
-    // Otomatis Tampilkan Modal Pop-up saat Pertama Kali Akses
     if (modalGuide) {
         modalGuide.style.display = 'flex';
     }
@@ -37,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeInputForAssist = null;
     let targetCharIndex = -1;
 
-    // Map Aksara Murda & Swara untuk Label Dropdown
     const MURDA_MAP = {
         'n': 'ꦟ', 'k': 'ꦑ', 't': 'ꦡ', 's': 'ꦯ', 'p': 'ꦦ', 'g': 'ꦓ', 'b': 'ꦨ', 'j': 'ꦙ',
         'N': 'ꦟ', 'K': 'ꦑ', 'T': 'ꦡ', 'S': 'ꦯ', 'P': 'ꦦ', 'G': 'ꦓ', 'B': 'ꦨ', 'J': 'ꦙ'
@@ -57,6 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputInstansi = document.getElementById('inputInstansi');
     const selectFontInstansi = document.getElementById('selectFontInstansi');
     const inputAlamat = document.getElementById('inputAlamat');
+    const selectFontAlamatAksara = document.getElementById('selectFontAlamatAksara');
+    const groupFontAlamatAksara = document.getElementById('groupFontAlamatAksara');
     const selectFontAlamatLatin = document.getElementById('selectFontAlamatLatin');
     const groupFontAlamatLatin = document.getElementById('groupFontAlamatLatin');
     const inputRT = document.getElementById('inputRT');
@@ -100,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const kopAlamat = document.getElementById('kopAlamat');
     const kopDivider = document.getElementById('kopDivider');
 
-    // Referensi Tombol
     const btnPreview = document.getElementById('btnPreview');
     const btnPrint = document.getElementById('btnPrint');
     const btnPrint2 = document.getElementById('btnPrint2');
@@ -114,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function transliterateText(text) {
         if (!text) return '';
 
-        // Map Singkatan Karakter Tunggal Kapital (Lengkap dengan Taling Pelafalan)
         const CAPITAL_LETTER_MAP = {
             'A': 'ꦄ', 'B': 'ꦧꦺ', 'C': 'ꦕꦺ', 'D': 'ꦢꦺ', 'E': 'ꦌ',
             'F': 'ꦥ꦳꧀', 'G': 'ꦒꦺ', 'H': 'ꦲ', 'I': 'ꦆ', 'J': 'ꦗꦺ',
@@ -123,12 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
             'U': 'ꦈ', 'V': 'ꦮ꦳', 'W': 'ꦮꦺ', 'X': 'ꦌꦏ꧀ꦱ꧀', 'Y': 'ꦪꦺ', 'Z': 'ꦗ꦳'
         };
 
-        // Map Dwihuruf Digraf Singkatan
         const DIGRAPH_MAP = {
             'DH': 'ꦣꦺ', 'TH': 'ꦛꦺ', 'NY': 'ꦚꦺ', 'NG': 'ꦔꦺ', 'KH': 'ꦑꦺ', 'SH': 'ꦯꦺ'
         };
 
-        // Pattern untuk mendeteksi blok singkatan KAPITAL (misal: DHIY, DH.I.Y, D.I.Y, DIY, RT, RW)
         const ABBR_REGEX = /\b(?:[A-Z]{2,}|[A-Z]{1,2}(?:\.[A-Z]{1,2})+)\.?;?/g;
 
         let processedText = text.replace(ABBR_REGEX, (match) => {
@@ -170,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return aksaraStr.replace(/\s+/g, '');
     }
 
-    // Fungsi Penyesuaian Visual Scale untuk Layar HP/Tablet Kecil
     function adjustMobileScale() {
         const pageA4 = document.getElementById('pageA4');
         const previewContainer = document.querySelector('.preview-container');
@@ -269,7 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const lowerChar = char.toLowerCase();
         let options = [];
 
-        // 1. Kasus Karakter D / d
         if (char === 'D') {
             options = [
                 { label: 'D (Singkatan Da)', value: 'D', aksara: 'ꦢꦺ' },
@@ -283,33 +277,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 { label: 'DH (Singkatan Dha)', value: 'DH', aksara: 'ꦣꦺ' },
                 { label: 'D.H. (Terpisah Da + Ha)', value: 'D.H.', aksara: 'ꦢꦺ꧈ꦲ꧈' }
             ];
-        } 
-        // 2. Kasus Karakter N / n
-        else if (char === 'N') {
+        } else if (char === 'N') {
             options = [
                 { label: 'N (Singkatan Na)', value: 'N', aksara: 'ꦌꦤ꧀' },
                 { label: 'NY (Singkatan Nya)', value: 'NY', aksara: 'ꦚꦺ' },
                 { label: 'N.Y. (Terpisah N + Y)', value: 'N.Y.', aksara: 'ꦌꦤ꧀꧈ꦪꦺ꧈' },
                 { label: 'NG (Singkatan Nga)', value: 'NG', aksara: 'ꦔꦺ' }
             ];
-        }
-        // 3. Kasus Karakter T / t
-        else if (char === 'T') {
+        } else if (char === 'T') {
             options = [
                 { label: 'T (Singkatan Ta)', value: 'T', aksara: 'ꦠꦺ' },
                 { label: 'TH (Singkatan Tha)', value: 'TH', aksara: 'ꦛꦺ' },
                 { label: 'T.H. (Terpisah T + H)', value: 'T.H.', aksara: 'ꦠꦺ꧈ꦲ꧈' }
             ];
-        }
-        // 4. Kasus Karakter e / é (taling/pepet)
-        else if (lowerChar === 'e' || char === 'é' || char === 'è') {
+        } else if (lowerChar === 'e' || char === 'é' || char === 'è') {
             options = [
                 { label: 'e (Pepet / e biasa)', value: 'e', aksara: 'ꦼ' },
                 { label: "é / e' (Taling)", value: "e'", aksara: 'ꦺ' }
             ];
-        } 
-        // 5. Kasus Aksara Murda
-        else if (MURDA_MAP[char]) {
+        } else if (MURDA_MAP[char]) {
             const lower = char.toLowerCase();
             const upper = char.toUpperCase();
 
@@ -317,9 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { label: `${lower} (Aksara Biasa)`, value: lower, aksara: transliterateText(lower) },
                 { label: `${upper} (Aksara Murda)`, value: upper, aksara: MURDA_MAP[upper] }
             ];
-        } 
-        // 6. Kasus Aksara Swara
-        else if (SWARA_MAP_SHOW[char]) {
+        } else if (SWARA_MAP_SHOW[char]) {
             const lower = char.toLowerCase();
             const upper = char.toUpperCase();
 
@@ -371,9 +355,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Tampilkan/sembunyikan grup pilihan font Latin
-        if (groupFontAlamatLatin) {
-            groupFontAlamatLatin.style.display = (modeAlamat === 'latin') ? 'block' : 'none';
+        // Tampilkan/sembunyikan grup pilihan font secara kondisional
+        if (groupFontAlamatLatin && groupFontAlamatAksara) {
+            if (modeAlamat === 'latin') {
+                groupFontAlamatLatin.style.display = 'block';
+                groupFontAlamatAksara.style.display = 'none';
+            } else {
+                groupFontAlamatLatin.style.display = 'none';
+                groupFontAlamatAksara.style.display = 'block';
+            }
         }
 
         const alamatVal = inputAlamat.value.trim();
@@ -409,7 +399,8 @@ document.addEventListener('DOMContentLoaded', () => {
             kopAlamat.textContent = parts.join(', ');
         } else {
             kopAlamat.className = 'kop-alamat';
-            if (selectedFontInstansi === 'Ngayogyan Jejeg') {
+            const selectedFontAlamatAksara = selectFontAlamatAksara ? selectFontAlamatAksara.value : 'Ngayogyann';
+            if (selectedFontAlamatAksara === 'Ngayogyan Jejeg') {
                 kopAlamat.style.fontFamily = "'Ngayogyan Jejeg', 'Ngayogyann', serif";
             } else {
                 kopAlamat.style.fontFamily = "'Ngayogyann', serif";
@@ -506,7 +497,6 @@ document.addEventListener('DOMContentLoaded', () => {
         valLineHeightAlamat.textContent = lineHeightAlamatVal;
         valGapAlamat.textContent = gapAlamatVal;
 
-        // Sesuaikan skala visual untuk HP
         adjustMobileScale();
     }
 
@@ -574,6 +564,10 @@ document.addEventListener('DOMContentLoaded', () => {
         selectFontInstansi.addEventListener('change', renderKop);
     }
 
+    if (selectFontAlamatAksara) {
+        selectFontAlamatAksara.addEventListener('change', renderKop);
+    }
+
     if (selectFontAlamatLatin) {
         selectFontAlamatLatin.addEventListener('change', renderKop);
     }
@@ -609,11 +603,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('resize', adjustMobileScale);
 
-    // Re-render saat Google Font selesai dimuat
     if (document.fonts) {
         document.fonts.ready.then(renderKop);
     }
 
-    // Initial Render
     renderKop();
 });
