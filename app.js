@@ -49,13 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // -------------------------------------------------------------
-    // 3. Referensi Input Form & Logo
+    // 3. Referensi Input Form, Font & Logo
     // -------------------------------------------------------------
     const logoInput = document.getElementById('logoInput');
     const btnRemoveLogo = document.getElementById('btnRemoveLogo');
     const selectLogoRatio = document.getElementById('selectLogoRatio');
     const inputInstansi = document.getElementById('inputInstansi');
+    const selectFontInstansi = document.getElementById('selectFontInstansi');
     const inputAlamat = document.getElementById('inputAlamat');
+    const selectFontAlamatLatin = document.getElementById('selectFontAlamatLatin');
+    const groupFontAlamatLatin = document.getElementById('groupFontAlamatLatin');
     const inputRT = document.getElementById('inputRT');
     const inputRW = document.getElementById('inputRW');
     const inputKelurahan = document.getElementById('inputKelurahan');
@@ -347,18 +350,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // 8. Fungsi Utama Render Kop Surat
     // -------------------------------------------------------------
     function renderKop() {
-        // 1. Render Nama Instansi
+        // 1. Render & Terapkan Font Nama Instansi
         const rawInstansi = inputInstansi.value.trim();
         const aksaraInstansi = applyScriptoContinua(transliterateText(rawInstansi));
         kopInstansi.textContent = aksaraInstansi;
 
-        // 2. Render Alamat (Aksara vs Latin)
+        const selectedFontInstansi = selectFontInstansi ? selectFontInstansi.value : 'Ngayogyann';
+        if (selectedFontInstansi === 'Ngayogyan Jejeg') {
+            kopInstansi.style.fontFamily = "'Ngayogyan Jejeg', 'Ngayogyann', serif";
+        } else {
+            kopInstansi.style.fontFamily = "'Ngayogyann', serif";
+        }
+
+        // 2. Render Alamat (Aksara vs Latin) & Terapkan Font
         let modeAlamat = 'aksara';
         for (const radio of radioModeAlamat) {
             if (radio.checked) {
                 modeAlamat = radio.value;
                 break;
             }
+        }
+
+        // Tampilkan/sembunyikan grup pilihan font Latin
+        if (groupFontAlamatLatin) {
+            groupFontAlamatLatin.style.display = (modeAlamat === 'latin') ? 'block' : 'none';
         }
 
         const alamatVal = inputAlamat.value.trim();
@@ -372,6 +387,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (modeAlamat === 'latin') {
             kopAlamat.className = 'kop-alamat';
+            const selectedFontLatin = selectFontAlamatLatin ? selectFontAlamatLatin.value : 'Inter';
+            const serifFonts = ['Lora', 'PT Serif', 'Cormorant Garamond'];
+            const fallback = serifFonts.includes(selectedFontLatin) ? 'serif' : 'sans-serif';
+            kopAlamat.style.fontFamily = `'${selectedFontLatin}', ${fallback}`;
+
             let parts = [];
             if (alamatVal) parts.push(alamatVal);
             if (rtVal || rwVal) {
@@ -388,9 +408,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             kopAlamat.textContent = parts.join(', ');
         } else {
-            kopAlamat.className = 'kop-alamat font-ngayogyann';
-            let resultAksara = '';
+            kopAlamat.className = 'kop-alamat';
+            if (selectedFontInstansi === 'Ngayogyan Jejeg') {
+                kopAlamat.style.fontFamily = "'Ngayogyan Jejeg', 'Ngayogyann', serif";
+            } else {
+                kopAlamat.style.fontFamily = "'Ngayogyann', serif";
+            }
 
+            let resultAksara = '';
             if (alamatVal) resultAksara += applyScriptoContinua(transliterateText(alamatVal));
             if (rtVal) resultAksara += '꧈ꦌꦂ꧈ꦠꦺ꧈' + applyScriptoContinua(transliterateText(rtVal));
             if (rwVal) resultAksara += '꧈ꦌꦂ꧈ꦮꦺ꧈' + applyScriptoContinua(transliterateText(rwVal));
@@ -539,11 +564,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // -------------------------------------------------------------
-    // 10. Event Listener Input Form, Sliders & Navigation
+    // 10. Event Listener Input Form, Sliders, Fonts & Navigation
     // -------------------------------------------------------------
     inputElements.forEach(el => {
         el.addEventListener('input', renderKop);
     });
+
+    if (selectFontInstansi) {
+        selectFontInstansi.addEventListener('change', renderKop);
+    }
+
+    if (selectFontAlamatLatin) {
+        selectFontAlamatLatin.addEventListener('change', renderKop);
+    }
 
     for (const radio of radioModeAlamat) {
         radio.addEventListener('change', renderKop);
@@ -575,6 +608,11 @@ document.addEventListener('DOMContentLoaded', () => {
     btnPrint2.addEventListener('click', triggerPrint);
 
     window.addEventListener('resize', adjustMobileScale);
+
+    // Re-render saat Google Font selesai dimuat
+    if (document.fonts) {
+        document.fonts.ready.then(renderKop);
+    }
 
     // Initial Render
     renderKop();
