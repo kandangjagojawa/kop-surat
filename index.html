@@ -133,7 +133,7 @@
             <input type="text" id="inputKodePos" placeholder="55786" autocapitalize="none" spellcheck="false" autocomplete="off">
         </div>
 
-        <!-- Mode Penulisan Alamat & Font Latin -->
+        <!-- Mode Penulisan Alamat & Font Kondisional -->
         <div class="form-row">
             <div class="form-group" style="flex: 1;">
                 <label>Penulisan Alamat (Baris Bawah):</label>
@@ -142,6 +142,17 @@
                     <label><input type="radio" name="modeAlamat" value="latin"> Latin</label>
                 </div>
             </div>
+
+            <!-- Font Alamat Aksara Jawa (Aktif secara default saat Aksara Jawa dipilih) -->
+            <div class="form-group" id="groupFontAlamatAksara" style="flex: 1;">
+                <label for="selectFontAlamatAksara">Font Alamat (Aksara Jawa):</label>
+                <select id="selectFontAlamatAksara">
+                    <option value="Ngayogyann" selected>Ngayogyan</option>
+                    <option value="Ngayogyan Jejeg">Ngayogyan Jejeg</option>
+                </select>
+            </div>
+
+            <!-- Font Alamat Latin (Muncul kondisional saat Latin dipilih) -->
             <div class="form-group" id="groupFontAlamatLatin" style="flex: 1; display: none;">
                 <label for="selectFontAlamatLatin">Font Alamat (Latin):</label>
                 <select id="selectFontAlamatLatin">
