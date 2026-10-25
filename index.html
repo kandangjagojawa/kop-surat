@@ -14,6 +14,12 @@
     </script>
 
     <title>Aplikasi Kop Surat Aksara Jawa</title>
+    
+    <!-- Google Fonts untuk Alamat Latin -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400..700;1,400..700&family=Inter:wght@400..700&family=Josefin+Sans:ital,wght@0,400..700;1,400..700&family=Lato:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400..700;1,400..700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
     <!-- Engine Transliterasi Sriwedari -->
     <script src="sriwedari-skt.js"></script>
@@ -69,9 +75,19 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="inputInstansi">Nama Instansi / Organisasi:</label>
-            <input type="text" id="inputInstansi" class="input-required" placeholder="komunitas kaNdhangjago yogyakarta" autocapitalize="none" spellcheck="false" autocomplete="off">
+        <!-- Nama Instansi & Pilihan Font -->
+        <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+                <label for="inputInstansi">Nama Instansi / Organisasi:</label>
+                <input type="text" id="inputInstansi" class="input-required" placeholder="komunitas kaNdhangjago yogyakarta" autocapitalize="none" spellcheck="false" autocomplete="off">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label for="selectFontInstansi">Font Instansi:</label>
+                <select id="selectFontInstansi">
+                    <option value="Ngayogyann" selected>Ngayogyan</option>
+                    <option value="Ngayogyan Jejeg">Ngayogyan Jejeg</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-group">
@@ -117,11 +133,25 @@
             <input type="text" id="inputKodePos" placeholder="55786" autocapitalize="none" spellcheck="false" autocomplete="off">
         </div>
 
-        <div class="form-group">
-            <label>Penulisan Alamat (Baris Bawah):</label>
-            <div class="radio-group">
-                <label><input type="radio" name="modeAlamat" value="aksara" checked> Aksara Jawa</label>
-                <label><input type="radio" name="modeAlamat" value="latin"> Latin</label>
+        <!-- Mode Penulisan Alamat & Font Latin -->
+        <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+                <label>Penulisan Alamat (Baris Bawah):</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="modeAlamat" value="aksara" checked> Aksara Jawa</label>
+                    <label><input type="radio" name="modeAlamat" value="latin"> Latin</label>
+                </div>
+            </div>
+            <div class="form-group" id="groupFontAlamatLatin" style="flex: 1; display: none;">
+                <label for="selectFontAlamatLatin">Font Alamat (Latin):</label>
+                <select id="selectFontAlamatLatin">
+                    <option value="Inter" selected>Inter</option>
+                    <option value="Lato">Lato</option>
+                    <option value="Lora">Lora</option>
+                    <option value="PT Serif">PT Serif</option>
+                    <option value="Cormorant Garamond">Cormorant Garamond</option>
+                    <option value="Josefin Sans">Josefin Sans</option>
+                </select>
             </div>
         </div>
 
